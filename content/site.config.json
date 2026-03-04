@@ -4,10 +4,10 @@
     "subjectLine": "з дисципліни «WEB-ОРІЄНТОВАНІ ТЕХНОЛОГІЇ. BACKEND РОЗРОБКИ»"
   },
   "student": {
-    "fullName": "Прізвище Ім’я По батькові",
-    "group": "Іx-xx",
+    "fullName": "Сухоручкін Гліб Андрійович",
+    "group": "ІА-34",
     "gender": "male",
-    "photo": "/students/chad.jpg"
+    "photo": "/students/hlib.jpg"
   },
   "toc": {
     "minDepth": 2,
