@@ -270,9 +270,10 @@ Hello from Node.js server
 
 ```json
 {
-  "id": 3,
-  "name": "Марія Коваль",
-  "group": "ІА-32"
+	"id": 3,
+	"name": "Марія Коваль",
+	"group": "ІА-32",
+	"course": "web"
 }
 ```
 
@@ -280,12 +281,10 @@ Hello from Node.js server
 
 ```json
 {
-  "message": "Студента додано успішно",
-  "student": {
-    "id": 3,
-    "name": "Марія Коваль",
-    "group": "ІА-32"
-  }
+	"id": 3,
+	"name": "Марія Коваль",
+	"group": "ІА-32",
+	"course": "web"
 }
 ```
 
@@ -297,8 +296,7 @@ Hello from Node.js server
 
 ```json
 {
-  "name": "Марія Ковальчук",
-  "group": "ІА-34"
+	"group": "ІА-34"
 }
 ```
 
@@ -306,12 +304,10 @@ Hello from Node.js server
 
 ```json
 {
-  "message": "Дані студента оновлено",
-  "student": {
-    "id": 3,
-    "name": "Марія Ковальчук",
-    "group": "ІА-34"
-  }
+	"id": 3,
+	"name": "Марія Коваль",
+	"group": "ІА-34",
+	"course": "web"
 }
 ```
 
@@ -323,12 +319,13 @@ Hello from Node.js server
 
 ```json
 {
-  "message": "Студента видалено",
-  "student": {
-    "id": 3,
-    "name": "Марія Ковальчук",
-    "group": "ІА-34"
-  }
+	"message": "Student deleted",
+	"student": {
+		"id": 3,
+		"name": "Марія Коваль",
+		"group": "ІА-34",
+		"course": "web"
+	}
 }
 ```
 
@@ -367,7 +364,7 @@ curl http://localhost:3000/students
 ```bash
 curl -X POST http://localhost:3000/students \
   -H "Content-Type: application/json" \
-  -d '{"id":3,"name":"Марія Коваль","group":"ІА-32"}'
+  -d '{"id":3,"name":"Марія Коваль","group":"ІА-32","course":"web"}'
 ```
 
 Оновлення студента:
@@ -428,18 +425,12 @@ curl -X DELETE http://localhost:3000/students/3
 
 ## Скріншоти
 
-![Перевірка версій Node.js та npm](/assets/labs/lab-1/screen-node-version.png)
+![Перевірка маршруту GET /students](/assets/labs/lab-1-2/screen-get-students.png)
 
-![Створення проєкту та встановлення Express.js](/assets/labs/lab-1/screen-install-express.png)
-
-![Запуск сервера в терміналі](/assets/labs/lab-1/screen-server-start.png)
-
-![Перевірка маршруту GET /students](/assets/labs/lab-1/screen-get-students.png)
-
-![Перевірка маршруту POST /students у Postman](/assets/labs/lab-1/screen-post-students.png)
+![Перевірка маршруту POST /students у Insomnia](/assets/labs/lab-1-2/screen-post-students.png)
 
 ---
 
 ## Висновки
 
-У цій лабораторній роботі я встановив та налаштував середовище Node.js, створив проєкт на Express.js і реалізував простий HTTP-сервер. Також я навчився створювати REST API-маршрути для отримання, додавання, оновлення та видалення даних про студентів і перевіряти їхню роботу за допомогою браузера, Postman та `curl`.
+У цій лабораторній роботі я встановив та налаштував середовище Node.js, створив проєкт на Express.js і реалізував простий HTTP-сервер. Також я навчився створювати REST API-маршрути для отримання, додавання, оновлення та видалення даних про студентів і перевіряти їхню роботу за допомогою браузера та Insomnia.
