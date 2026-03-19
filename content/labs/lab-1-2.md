@@ -354,10 +354,7 @@
 
 ![Скрін index.html](/assets/labs/lab-1/screen-index.png)  
 ![Скрін about.html](/assets/labs/lab-1/screen-about.png)  
-- ![Скрін відповіді API /students](/assets/labs/lab-1-2/screen-students-api.png)
-
-Додаткові (за потреби):
-- ![Скрін запуску Node.js сервера](/assets/labs/lab-1-2/screen-server.png)
+![Скрін відповіді API /students](/assets/labs/lab-1-2/screen-students-api.png)
 
 ---
 
