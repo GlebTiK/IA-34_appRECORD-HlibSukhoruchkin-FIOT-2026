@@ -1,436 +1,390 @@
-## Тема, мета, місце розташування
+## Тема, Мета, Місце розташування
 
-**Тема:** «Встановлення та налаштування середовища Node.js. Основи роботи з Express.js».
+**Тема:** «Веб-орієнтований застосунок каталогу цуценят "Puppy Haven".»
 
-**Мета:**
-- ознайомитися з принципами роботи HTTP-серверів;
-- вивчити основи створення веб-серверів на Node.js;
-- ознайомитися з архітектурою REST API;
-- навчитися створювати маршрути для обробки HTTP-запитів у Express.js.
+**Мета:** прискорити вибір цуценя для користувача за рахунок зручного веб-каталогу з фото та короткими характеристиками і простої форми заявки на візит, щоб швидко переглянути варіанти та одразу залишити запит на зустріч/бронювання.  
+Додатково (Частина 2): створити та запустити HTTP-сервер на Node.js з використанням Express.js і реалізувати просте REST API з маршрутами **GET/POST/PUT/DELETE** для ресурсу `/students`.
 
 **Місце розташування:**
+
 - [GitHub](https://github.com/GlebTiK/IA-34_appWEB-HlibSukhoruchkin-FIOT-2026/)
-- [Live demo](https://labs-demo2.771707.xyz/)
+- [Live demo](https://labs-demo.771707.xyz/)
 
 ---
 
-## Опис предметної області
+## Опис предметного середовища
 
-У межах цієї лабораторної роботи розглядається створення простого REST API для роботи зі списком студентів. Серверна частина реалізується на платформі Node.js із використанням фреймворку Express.js. Застосунок приймає HTTP-запити від клієнта, обробляє їх і повертає відповіді у текстовому або JSON-форматі.
-
-Предметна область лабораторної роботи - базові серверні веб-технології, а саме:
-- запуск HTTP-сервера;
-- маршрутизація запитів;
-- передача та обробка JSON-даних;
-- реалізація базових CRUD-операцій для ресурсу `students`.
+**Предметна галузь:** веб-каталог цуценят "Puppy Haven". Сайт надає перелік цуценят (у вигляді таблиці), коротку інформацію про проєкт/команду, контакти та форму для подачі заявки на візит.
 
 ---
 
-## Короткі теоретичні відомості
+## Структура веб-застосунку
 
-### HTTP-сервер
+- **Головна сторінка** — шапка з навігацією, hero-блок «цуценя тижня», блок категорій, прев’ю «Про нас», каталог (таблиця), форма заявки, секція «Відгуки» (заготовка), футер з контактами.
+- **Про нас** — сторінка з описом проєкту, бізнес-логікою та переліком вимог, оформлена в стилі головної сторінки (шапка + футер).
 
-HTTP-сервер - це програмне забезпечення, яке приймає HTTP-запити від клієнтів, обробляє їх і повертає відповіді. Основні функції HTTP-сервера:
-- прийом запитів;
-- обробка даних запиту;
-- формування відповіді;
-- передача результату клієнту.
+### Додано у Частині 2 (backend)
 
-### Node.js
-
-Node.js - це середовище виконання JavaScript поза браузером, яке дозволяє створювати серверні застосунки. До його переваг належать:
-- асинхронна модель роботи;
-- висока продуктивність;
-- велика екосистема пакетів;
-- зручність створення API та веб-сервісів.
-
-### Express.js
-
-Express.js - це фреймворк для Node.js, який спрощує створення серверних застосунків. Його основні можливості:
-- створення маршрутів;
-- обробка HTTP-запитів;
-- використання middleware;
-- швидке створення REST API.
-
-### REST API
-
-REST API - це спосіб організації взаємодії між клієнтом і сервером, у якому ресурси доступні через URL-адреси, а дії над ними виконуються за допомогою HTTP-методів. Для REST-підходу характерні:
-- клієнт-серверна архітектура;
-- відсутність збереження стану між запитами;
-- використання стандартних HTTP-методів;
-- передача даних у зручному форматі, зазвичай JSON.
-
-### Основні HTTP-методи
-
-| Метод | Призначення |
-|---|---|
-| `GET` | отримання даних |
-| `POST` | створення нового ресурсу |
-| `PUT` | оновлення ресурсу |
-| `DELETE` | видалення ресурсу |
+- **Node.js + Express сервер** (`server.js`) — запускає HTTP-сервер.
+- **REST API**:
+  - `GET /` — повертає текст `Hello from Node.js server` (перевірка роботи сервера).
+  - `GET /students` — повертає список студентів у форматі JSON.
+  - `POST /students` — додає нового студента (поля: `id`, `name`, `group`).
+  - `PUT /students/:id` — оновлює дані студента.
+  - `DELETE /students/:id` — видаляє студента.
+- **Статичний сайт Puppy Haven** віддається сервером як статичні файли за шляхом:
+  - `GET /app/` → `public/index.html` та інші ресурси (css/js/assets).
 
 ---
 
-## Постановка завдання
+## Сценарій взаємодії (бізнес-логіка)
 
-Під час виконання лабораторної роботи необхідно:
-1. встановити Node.js та перевірити його роботу командами `node -v` і `npm -v`;
-2. створити новий проєкт і встановити бібліотеку Express.js;
-3. реалізувати простий HTTP-сервер;
-4. створити маршрут `GET /students`, який повертає список студентів у форматі JSON;
-5. створити маршрут `POST /students` для додавання нового студента;
-6. створити маршрути `PUT /students/:id` і `DELETE /students/:id` для оновлення та видалення студента.
-
----
-
-## Хід виконання роботи
-
-### 1. Створення та налаштування проєкту
-
-Для виконання лабораторної роботи було створено окрему папку проєкту `lab1-rest-api`. Далі виконано ініціалізацію Node.js-проєкту та встановлено Express.js.
-
-```bash
-mkdir lab1-rest-api
-cd lab1-rest-api
-npm init -y
-npm install express
-```
-
-Після цього в папці проєкту було створено файл `server.js`, у якому реалізовано серверну логіку.
-
-### 2. Перевірка встановлення Node.js
-
-```bash
-node -v
-npm -v
-```
-
-Команди дозволяють переконатися, що Node.js і менеджер пакетів npm встановлені та готові до роботи.
-
-### 3. Реалізація HTTP-сервера та REST API
-
-Для лабораторної роботи створено сервер Express.js, який:
-- відповідає на запит `GET /` текстовим повідомленням;
-- повертає список студентів через `GET /students`;
-- додає нового студента через `POST /students`;
-- оновлює дані студента через `PUT /students/:id`;
-- видаляє студента через `DELETE /students/:id`.
-
-Нижче наведено приклад реалізації `server.js`.
-
-```js
-const express = require("express");
-
-const app = express();
-const PORT = 3000;
-
-app.use(express.json());
-
-let students = [
-  { id: 1, name: "Гліб Сухоручкін", group: "ІА-34" },
-  { id: 2, name: "Іван Петренко", group: "ІА-31" }
-];
-
-app.get("/", (req, res) => {
-  res.send("Hello from Node.js server");
-});
-
-app.get("/students", (req, res) => {
-  res.json(students);
-});
-
-app.post("/students", (req, res) => {
-  const { id, name, group } = req.body;
-
-  if (!id || !name || !group) {
-    return res.status(400).json({
-      message: "Поля id, name та group є обов'язковими"
-    });
-  }
-
-  const existingStudent = students.find((student) => student.id === id);
-
-  if (existingStudent) {
-    return res.status(409).json({
-      message: "Студент із таким id вже існує"
-    });
-  }
-
-  const newStudent = { id, name, group };
-  students.push(newStudent);
-
-  res.status(201).json({
-    message: "Студента додано успішно",
-    student: newStudent
-  });
-});
-
-app.put("/students/:id", (req, res) => {
-  const studentId = Number(req.params.id);
-  const { name, group } = req.body;
-
-  const student = students.find((item) => item.id === studentId);
-
-  if (!student) {
-    return res.status(404).json({
-      message: "Студента не знайдено"
-    });
-  }
-
-  if (name) {
-    student.name = name;
-  }
-
-  if (group) {
-    student.group = group;
-  }
-
-  res.json({
-    message: "Дані студента оновлено",
-    student
-  });
-});
-
-app.delete("/students/:id", (req, res) => {
-  const studentId = Number(req.params.id);
-  const studentIndex = students.findIndex((item) => item.id === studentId);
-
-  if (studentIndex === -1) {
-    return res.status(404).json({
-      message: "Студента не знайдено"
-    });
-  }
-
-  const deletedStudent = students[studentIndex];
-  students.splice(studentIndex, 1);
-
-  res.json({
-    message: "Студента видалено",
-    student: deletedStudent
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
-```
-
-### 4. Запуск сервера
-
-Після написання коду сервер запускається командою:
-
-```bash
-node server.js
-```
-
-Після запуску застосунок доступний за адресою:
-
-```text
-http://localhost:3000
-```
+1. Користувач відкриває сайт і переходить до розділу **Каталог** (через меню або прокрутку).
+2. Переглядає таблицю з цуценятами (фото, ім’я, опис, вік, внесок/ціна).
+3. Переходить до розділу **Заявка на візит** і обирає цуценя зі списку у формі.
+4. Заповнює форму (ім’я, телефон, дата/час, коментар) і надсилає заявку.
+5. Отримує клієнтське підтвердження відправки (на сторінці).
+6. Адміністратор зв’язується для уточнення деталей (поза межами сайту, за контактним номером/поштою).
 
 ---
 
-## Опис маршрутів API
+## Вимоги
 
-### `GET /`
+### Функціональні вимоги
 
-Маршрут використовується для перевірки роботи сервера. У відповідь повертається текстове повідомлення:
+- Головна навігація по розділах сторінки та перехід на сторінку «Про нас».
+- Адаптивна навігація (бургер-меню на мобільних).
+- Відображення каталогу у вигляді таблиці (рядки заповнюються через JavaScript).
+- Форма заявки на візит з обов’язковими полями та відправкою (клієнтське повідомлення-підтвердження).
+- Блок контактів у футері.
 
-```text
-Hello from Node.js server
-```
+### Нефункціональні вимоги
 
-### `GET /students`
-
-Маршрут повертає список студентів у форматі JSON.
-
-**Приклад відповіді:**
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Гліб Сухоручкін",
-    "group": "ІА-34"
-  },
-  {
-    "id": 2,
-    "name": "Іван Петренко",
-    "group": "ІА-31"
-  }
-]
-```
-
-### `POST /students`
-
-Маршрут додає нового студента. Дані передаються в тілі запиту у форматі JSON.
-
-**Приклад запиту:**
-
-```json
-{
-	"id": 3,
-	"name": "Марія Коваль",
-	"group": "ІА-32",
-	"course": "web"
-}
-```
-
-**Приклад відповіді:**
-
-```json
-{
-	"id": 3,
-	"name": "Марія Коваль",
-	"group": "ІА-32",
-	"course": "web"
-}
-```
-
-### `PUT /students/:id`
-
-Маршрут оновлює інформацію про студента за його ідентифікатором.
-
-**Приклад запиту:**
-
-```json
-{
-	"group": "ІА-34"
-}
-```
-
-**Приклад відповіді:**
-
-```json
-{
-	"id": 3,
-	"name": "Марія Коваль",
-	"group": "ІА-34",
-	"course": "web"
-}
-```
-
-### `DELETE /students/:id`
-
-Маршрут видаляє студента за його `id`.
-
-**Приклад відповіді:**
-
-```json
-{
-	"message": "Student deleted",
-	"student": {
-		"id": 3,
-		"name": "Марія Коваль",
-		"group": "ІА-34",
-		"course": "web"
-	}
-}
-```
+- Інтуїтивний інтерфейс і зрозуміла навігація.
+- Коректна робота форми (перевірка обов’язкових полів у браузері).
+- Підтримка сучасних браузерів (Chrome, Firefox, Edge, Safari).
+- Оптимізовані зображення (щоб сторінки завантажувались швидко).
+- Адаптивність для різних розмірів екранів.
+- Головна сторінка має завантажуватися менше ніж за 2 секунди за нормальних умов мережі та на сучасних браузерах
 
 ---
 
-## Структура проєкту
+## Стек технологій
 
-```text
-lab1-rest-api/
-├── node_modules/
-├── package.json
-├── package-lock.json
-└── server.js
-```
-
----
-
-## Тестування роботи застосунку
-
-Для перевірки роботи API можна використовувати:
-- браузер - для простих `GET`-запитів;
-- Postman - для надсилання `GET`, `POST`, `PUT`, `DELETE`;
-- Insomnia - як альтернативний клієнт для тестування API;
-- `curl` - для перевірки маршрутів через термінал.
-
-### Приклади перевірки через `curl`
-
-Отримання списку студентів:
-
-```bash
-curl http://localhost:3000/students
-```
-
-Додавання нового студента:
-
-```bash
-curl -X POST http://localhost:3000/students \
-  -H "Content-Type: application/json" \
-  -d '{"id":3,"name":"Марія Коваль","group":"ІА-32","course":"web"}'
-```
-
-Оновлення студента:
-
-```bash
-curl -X PUT http://localhost:3000/students/3 \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Марія Ковальчук","group":"ІА-34"}'
-```
-
-Видалення студента:
-
-```bash
-curl -X DELETE http://localhost:3000/students/3
-```
+- **HTML5** — семантична розмітка сторінок і секцій.
+- **CSS3** — стилі та адаптивність (flex/grid, media queries).
+- **JavaScript (Vanilla)** — бургер-меню, заповнення каталогу даними, обробка відправки форми.
+- **Git + GitHub** — контроль версій, зберігання коду.
+- **Статичний хостинг** — публікація сайту як статичних сторінок.
+- **Node.js** — середовище виконання JavaScript на стороні сервера (Частина 2).
+- **Express.js** — фреймворк для створення HTTP-сервера та REST API (Частина 2).
 
 ---
 
-## Відповіді на контрольні питання
+## Діаграми
 
-1. **Що таке HTTP-протокол і для чого він використовується?**  
-   HTTP - це протокол передавання даних між клієнтом і сервером у веб-застосунках.
+---
 
-2. **Що таке архітектура клієнт–сервер?**  
-   Це модель, у якій клієнт надсилає запити, а сервер обробляє їх і повертає відповіді.
+### UML-case діаграма
 
-3. **Що таке HTTP-сервер?**  
-   Це програма, яка приймає HTTP-запити та повертає HTTP-відповіді.
+![UML-case діаграма](/assets/labs/lab-1/uml.png)
 
-4. **Що таке Node.js та яке його призначення?**  
-   Node.js - це середовище виконання JavaScript на стороні сервера для створення мережевих і веб-застосунків.
+---
 
-5. **Які переваги Node.js?**  
-   Асинхронність, швидкодія, велика кількість пакетів і зручність розробки API.
+### ER-діаграма
 
-6. **Для чого використовується Express.js?**  
-   Для спрощення створення серверів, маршрутів і обробки HTTP-запитів у Node.js.
+![ER-діаграма](/assets/labs/lab-1/er.png)
 
-7. **Що таке REST API?**  
-   Це архітектурний підхід до створення веб-сервісів, у якому ресурси доступні через URL і HTTP-методи.
+---
 
-8. **Які основні принципи REST?**  
-   Клієнт-серверна взаємодія, stateless-підхід, використання стандартних HTTP-методів і робота з ресурсами.
+## Структура документа
 
-9. **Які існують HTTP-методи?**  
-   Найуживаніші: `GET`, `POST`, `PUT`, `DELETE`.
+Нижче наведено узагальнену структуру HTML для двох сторінок проєкту — **index.html** (Головна) та **about.html** (Про нас). Це спрощені DOM-скелети, які демонструють основні блоки: `header` (логотип + навігація), `main` (секції), `footer` (контакти).
 
-10. **Який метод використовується для створення ресурсу?**  
-    Для створення нового ресурсу зазвичай використовується метод `POST`.
+> Примітка: у backend-версії ці файли знаходяться в папці `public/` і доступні через сервер за адресою `http://localhost:3000/app/`.  
+> Тому всі посилання та ресурси на сторінках використовують префікс `/app/` (наприклад `/app/css/style.css`).
 
-11. **У якому форматі зазвичай передаються дані в REST API?**  
-    Найчастіше використовується формат JSON.
+### 1) Структура сторінки `index.html` (Головна)
 
-12. **Які інструменти використовуються для тестування API?**  
-    Postman, Insomnia, `curl`, а для простих випадків - браузер.
+```html
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Puppy Haven - Головна</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">
+        <img src="/app/assets/images/logo.png" alt="Puppy Haven logo" />
+      </div>
+
+      <button class="burger" aria-label="Відкрити меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" aria-label="Головна навігація">
+        <ul>
+          <li><a href="/app/index.html#catalog">Каталог</a></li>
+          <li><a href="/app/about.html">Про нас</a></li>
+          <li><a href="/app/index.html#pick">Підібрати цуценя</a></li>
+          <li><a href="/app/index.html#contacts">Контакти</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-text">
+          <h2>Цуценя тижня: "Луна"</h2>
+          <p>Дружня, грайлива та дуже любить людей. Ідеальна для сім'ї.</p>
+          <a class="btn" href="/app/index.html#catalog">Перейти в каталог</a>
+        </div>
+        <div class="hero-image">
+          <img src="/app/assets/images/puppy-hero.png" alt="Фото цуценяти Луна" />
+        </div>
+      </section>
+
+      <section id="categories" class="categories">
+        <div class="category">
+          <img src="/app/assets/images/small.png" alt="Малі породи" />
+          <p>Малі породи</p>
+        </div>
+        <div class="category">
+          <img src="/app/assets/images/medium.png" alt="Середні породи" />
+          <p>Середні породи</p>
+        </div>
+        <div class="category">
+          <img src="/app/assets/images/big.png" alt="Великі породи" />
+          <p>Великі породи</p>
+        </div>
+      </section>
+
+      <section id="about-preview" class="about-preview">
+        <h2>Про нас</h2>
+        <div class="about-container">
+          <div class="about-text">
+            <p>
+              Puppy Haven - це сервіс, де можна безпечно обрати цуценя,
+              дізнатись про умови догляду та залишити заявку на візит. Ми дбаємо
+              про соціалізацію та здоров'я малюків.
+            </p>
+          </div>
+          <div class="about-image">
+            <img src="/app/assets/images/team.png" alt="Команда Puppy Haven" />
+          </div>
+        </div>
+      </section>
+
+      <section id="catalog" class="catalog">
+        <h2>Каталог</h2>
+        <table class="catalog-table">
+          <thead>
+            <tr>
+              <th>Фото</th>
+              <th>Ім'я</th>
+              <th>Опис</th>
+              <th>Вік</th>
+              <th>Внесок/ціна</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="pick" class="pick">
+        <h2>Заявка на візит</h2>
+        <form class="request-form">
+          <label
+            >Ваше ім'я
+            <input type="text" name="name" required />
+          </label>
+
+          <label
+            >Телефон
+            <input type="tel" name="phone" required />
+          </label>
+
+          <label
+            >Оберіть цуценя
+            <select name="puppy" required>
+              <option value="">- оберіть -</option>
+              <option value="luna">Луна</option>
+              <option value="max">Макс</option>
+            </select>
+          </label>
+
+          <label
+            >Дата/час
+            <input type="datetime-local" name="datetime" required />
+          </label>
+
+          <label
+            >Коментар
+            <textarea name="note" rows="4"></textarea>
+          </label>
+
+          <button type="submit">Надіслати заявку</button>
+        </form>
+      </section>
+
+      <section id="feedback" class="feedback">
+        <h2>Відгуки</h2>
+      </section>
+    </main>
+
+    <footer id="contacts" class="site-footer">
+      <div class="contacts">
+        <p><strong>Контакти:</strong> +38 (0XX) XXX-XX-XX, info@puppyhaven</p>
+        <p><strong>Графік:</strong> Пн–Сб 10:00–19:00</p>
+        <p><strong>Адреса:</strong> м. Київ, вул. Прикладна, 1</p>
+      </div>
+      <p>© 2026 Puppy Haven</p>
+    </footer>
+
+    <script src="/app/js/main.js"></script>
+  </body>
+</html>
+```
+
+### 2) Структура сторінки `about.html` (Про нас)
+
+```html
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Про нас — Puppy Haven</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">
+        <img src="/app/assets/images/logo.png" alt="Puppy Haven logo" />
+      </div>
+
+      <button class="burger" aria-label="Відкрити меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" aria-label="Головна навігація">
+        <ul>
+          <li><a href="/app/index.html#catalog">Каталог</a></li>
+          <li><a href="/app/about.html">Про нас</a></li>
+          <li><a href="/app/index.html#pick">Підібрати цуценя</a></li>
+          <li><a href="/app/about.html#contacts">Контакти</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-text">
+          <h2>Про Puppy Haven</h2>
+          <p>
+            Puppy Haven — це веб-каталог цуценят, де можна переглянути фото та
+            опис, дізнатися ключові параметри і залишити заявку на візит.
+          </p>
+          <a class="btn" href="/app/index.html#catalog">Перейти в каталог</a>
+        </div>
+        <div class="hero-image">
+          <img src="/app/assets/images/team.png" alt="Команда Puppy Haven" />
+        </div>
+      </section>
+
+      <section id="domain">
+        <h2>Предметна область</h2>
+        <p>
+          Сайт орієнтований на зручний перегляд списку цуценят та швидке
+          оформлення заявки. Кожна позиція в каталозі містить фото, короткий
+          опис і базові характеристики.
+        </p>
+      </section>
+
+      <section id="logic">
+        <h2>Бізнес-логіка (сценарій)</h2>
+        <ol>
+          <li>Користувач відкриває сайт і переходить у каталог.</li>
+          <li>Переглядає цуценят та обирає потрібного.</li>
+          <li>Заповнює форму заявки на візит.</li>
+          <li>Адміністратор підтверджує заявку та узгоджує деталі.</li>
+        </ol>
+      </section>
+
+      <section id="requirements">
+        <h2>Вимоги</h2>
+
+        <h3>Функціональні</h3>
+        <ul>
+          <li>Каталог цуценят з фото та описом.</li>
+          <li>Форма заявки на візит.</li>
+          <li>Доступні розділи «Про нас» і «Контакти» з навігації.</li>
+          <li>Адаптивність для ПК і мобільних пристроїв.</li>
+        </ul>
+
+        <h3>Нефункціональні</h3>
+        <ul>
+          <li>Зрозуміла структура та проста навігація.</li>
+          <li>Коректна робота форм (перевірка обов’язкових полів).</li>
+          <li>Підтримка сучасних браузерів.</li>
+          <li>Оптимізовані зображення для швидкого завантаження.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer id="contacts" class="site-footer">
+      <div class="contacts">
+        <p><strong>Контакти:</strong> +38 (0XX) XXX-XX-XX, info@puppyhaven</p>
+        <p><strong>Графік:</strong> Пн–Сб 10:00–19:00</p>
+        <p><strong>Адреса:</strong> м. Київ, вул. Прикладна, 1</p>
+      </div>
+      <p>© 2026 Puppy Haven</p>
+    </footer>
+  </body>
+</html>
+```
 
 ---
 
 ## Скріншоти
 
-![Перевірка маршруту GET /students](/assets/labs/lab-1-2/screen-get-students.png)
+![Скрін index.html](/assets/labs/lab-1/screen-index.png)  
+![Скрін about.html](/assets/labs/lab-1/screen-about.png)  
+- ![Скрін відповіді API /students](/assets/labs/lab-1-2/screen-students-api.png)
 
-![Перевірка маршруту POST /students у Insomnia](/assets/labs/lab-1-2/screen-post-students.png)
+Додаткові (за потреби):
+- ![Скрін запуску Node.js сервера](/assets/labs/lab-1-2/screen-server.png)
+
+---
+
+## Як запустити backend (Частина 2)
+
+1. Перейти в папку з проєктом та встановити залежності:
+
+```bash
+npm install
+```
+
+2. Запустити сервер:
+
+```bash
+node server.js
+```
+
+(або `npm start`)
+
+3. Перевірити в браузері/через Postman:
+
+- `http://localhost:3000/` → `Hello from Node.js server`
+- `http://localhost:3000/students` → JSON список студентів
+- `http://localhost:3000/app/` → статичний сайт Puppy Haven
 
 ---
 
 ## Висновки
 
-У цій лабораторній роботі я встановив та налаштував середовище Node.js, створив проєкт на Express.js і реалізував простий HTTP-сервер. Також я навчився створювати REST API-маршрути для отримання, додавання, оновлення та видалення даних про студентів і перевіряти їхню роботу за допомогою браузера та Insomnia.
+У ході виконання роботи було сформовано структуру веб-застосунку "Puppy Haven", описано предметну область і бізнес-логіку, визначено функціональні та нефункціональні вимоги, а також наведено приклади семантичної HTML-розмітки (таблиця каталогу, форма заявки, навігація та футер з контактами). Було створено Node.js проєкт з Express.js, реалізовано HTTP-сервер і REST API з маршрутами `/students` (GET/POST/PUT/DELETE) та організовано віддачу статичних сторінок Puppy Haven через Express.
